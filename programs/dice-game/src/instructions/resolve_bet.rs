@@ -7,8 +7,7 @@ use anchor_lang::{
 use solana_program::{
     ed25519_program, hash::hash, sysvar::instructions::{load_instruction_at_checked, ID},
 };
-
-pub const HOUSE_EDGE: u8 = 150; // 1.5 % house edge
+use crate::constants::HOUSE_EDGE;
 
 #[derive(Accounts)]
 pub struct ResolveBet<'info> {
@@ -92,7 +91,7 @@ impl<'info> ResolveBet<'info> {
 
         let chance = 100 - self.bet.roll as u128;
 
-        if self.bet.roll < roll {
+        if self.bet.roll > roll {
             let payout = (self.bet.amount as u128)
                 .checked_mul(10000 - HOUSE_EDGE as u128)
                 .ok_or(DiceError::Overflow)?
